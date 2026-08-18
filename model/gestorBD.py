@@ -13,6 +13,7 @@ class GestorBaseDados:
     def __init__(self,nomeBD:str):
         self.nomeBD=nomeBD
         self.conexao=None
+        self.inicializarTabelas()
         
 
 
@@ -126,10 +127,7 @@ class GestorBaseDados:
             return self.executarComandoSql(comandoSql)
         
         
-    def inserirDadosDeExemplo():
-        pass
-
-
+ 
 
     def inserirLinha(self,comandoSql:str,parametros:tuple=()):
         """Insere uma linha em uma determinada tabela da base de dados"""
@@ -138,24 +136,28 @@ class GestorBaseDados:
        
          
          
-    def inserirVariasLinhas(comandoSql:str,parametros:list[tuple]=[]):
-       """Executa um comando Sql. Retorna True se alguma linha foi afectada pela operacao e False caso contrario"""
-       try:
+    def inserirVariasLinhas(self,comandoSql:str,parametros:list[tuple]=[]):
+        """Executa um comando Sql. Retorna True se alguma linha foi afectada pela operacao e False caso contrario"""
+       
+        try:
             if self.conexao == None:
                 self.conectarBaseDados()
 
             cursor=self.conexao.cursor() # Utilizamos o cursor para executar comandos sql
             cursor.executemany(comandoSql,parametros)
-       except TypeError as e:
+            
+        except TypeError as e:
             print(f"Type Error: {e}")
 
-       except sqlite3.IntegrityError as e:
+        except sqlite3.IntegrityError as e:
             print(f"Integrity Error: {e}")
 
-       except Exception as e:
+        except Exception as e:
             print(f"Error: {e}")        
+        else:
+            self.conexao.commit() # Salva as alteracoes na BD
 
-
+    
 
 
 
@@ -184,8 +186,97 @@ class GestorBaseDados:
         finally:
             self.conexao.close()
             self.conexao=None
+
+
+    def inserirDadosDeExemplo(self):
+        """Insere varios dados de exemplo na base de dados, caso ela esteja vazia."""
+        try:
+            if self.conexao == None:
+                    self.conectarBaseDados()
+
+        
+            cursor=self.conexao.cursor() # Utilizamos o cursor para executar comandos sql
+            
+            #Verificar se existem estudantes na base de dados
+            comandoSql= "SELECT COUNT(*) FROM usuarios"
+            cursor.execute(comandoSql)
+            if cursor.fetchone()[0] > 0:
+                pass
+            else:
+                usuarios = [
+                        ('2024001', 'Alexandre Ntema', '123456', 'aluno', 'Engenharia Informática'),
+                        ('2024002', 'Henrinques Almeida', '123456', 'aluno', 'Engenharia Civil'),
+                        ('2024003', 'Afonso Adolfo', '123456', 'aluno', 'Engenharia Elétrica'),
+                        ('2024004', 'Ana Oliveira', '123456', 'aluno', 'Engenharia Mecânica'),
+                        ('2024005', 'Carlos Mendes', '123456', 'aluno', 'Engenharia Informática'),
+                        ('P001', 'Prof. Jaime', '123456', 'professor', None),
+                        ('P002', 'Prof. Ivone', '123456', 'professor', None),
+                    ]
+                comandoSql= "INSERT INTO usuarios (matricula, nome, senha, tipo, curso) VALUES (?, ?, ?, ?, ?)"
+                
+                self.inserirVariasLinhas(comandoSql,usuarios)
+               
+                
+            #Verificar se existem disciplinas na base de dados
+            comandoSql= "SELECT COUNT(*) FROM disciplinas"
+            cursor.execute(comandoSql)
+            if cursor.fetchone()[0] > 0:
+                pass
+            else:
+                disciplinas = [
+                ('INF101', 'Programação I', 6, 4),
+                ('MAT101', 'Cálculo I', 6, 4),
+                ('FIS101', 'Física I', 7, 4),
+                ('INF201', 'Programação II', 6, 4),
+                ('MAT201', 'Cálculo II', 7, 4),]
+                
+                comandoSql= "INSERT INTO disciplinas (codigo, nome, professor_id, creditos) VALUES (?, ?, ?, ?)"
+                
+                self.inserirVariasLinhas(comandoSql,disciplinas)
          
-         
+            
+            #Verificar se existem notas na base de dados
+            comandoSql= "SELECT COUNT(*) FROM notas"
+            cursor.execute(comandoSql)
+            if cursor.fetchone()[0]>0:
+                pass
+            else:
+                notas = [
+                (1, 1, 14, 16, 15, 15.0, 85, '2024.1', 2024),
+                (1, 2, 10, 8, 12, 10.0, 75, '2024.1', 2024),
+                (2, 1, 12, 10, 11, 11.0, 90, '2024.1', 2024),
+                (2, 2, 15, 14, 16, 15.0, 85, '2024.1', 2024),
+                (3, 2, 13, 12, 14, 13.0, 80, '2024.1', 2024),]   
+                #print("Dados de exemplo inseridos com sucesso!") 
+                
+                comandoSql= """INSERT INTO notas (aluno_id, disciplina_id, nota1, nota2, nota3, nota_final, frequencia, semestre, ano) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""  
+                self.inserirVariasLinhas(comandoSql,notas)
+            
+           # print("Dados de exemplo inseridos com sucesso!")
+            
+    
+        except TypeError as e:
+            print(f"Type Error: {e}")
+    
+        except sqlite3.IntegrityError as e:
+            print(f"Integrity Error: {e}")
+    
+        except Exception as e:
+            print(f"Error: {e}")
+        
+    
+    def inicializarTabelas(self):
+        """Inicializa a base de dados criando as tabelas e preencheendo os dados de exemplo caso ela esteja vazia."""
+        
+        self.criarTabelaUsuarios()
+        self.criarTabelaDisciplinas()
+        self.criarTabelaNotas()
+        self.criarTabelaNotificacoes()
+        self.inserirDadosDeExemplo()
+        
+        
+        
+           
     def ActualizarLinha(self,comandoSql,parametros:tuple=()):
         """Actualiza uma linha de uma determinada tabela"""
 
@@ -198,4 +289,5 @@ class GestorBaseDados:
 
         """Exemplo de comando sql: DELETE FROM nome_tabela WHERE condicao=?"""
         return self.executarComandoSql(comandoSql,parametros)
+
 

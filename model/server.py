@@ -2,7 +2,7 @@ import socket
 import threading
 import json
 from gestorBD import GestorBaseDados
-nomeBaseDados="pessoal.db"
+#nomeBaseDados="feng_live.db"
 
 class Server:
 
@@ -13,7 +13,7 @@ class Server:
         self.PORT=port 
         self.FORMAT=format
         self.serverSocket=None
-        self.gestorBD=GestorBaseDados(nomeBaseDados)
+       # self.gestorBD=GestorBaseDados(nomeBaseDados)
 
     def start(self):
         """Starts the server."""

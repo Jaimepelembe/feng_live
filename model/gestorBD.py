@@ -328,7 +328,8 @@ class GestorBaseDados:
         self.criarTabelaTurma()
         self.criarTabelaNotas()
         self.criarTabelaNotificacoes()
-        #self.inserirDadosDeExemplo()
+        #self.inserirDadosDeExemplo()  #Henriques vais modiciar esse metodo inserirDadosExemplo, colocando os valores em ondem de criacao das tabelas, primeiro curso, depois estudante e por ai em diante
+        # Nao precisas inserir as notificacoes elas sao geradas pelo sistema....
         
         
         

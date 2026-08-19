@@ -3,20 +3,20 @@ nomeBaseDados="feng_live.db"
 
 class Estudante:
     
-    def __init__(self,id:str="",matricula:str="",nome:str="",senha:str="",tipo:str="aluno",curso:str=""):
-        self.id=id
-        self.matricula=matricula
+    def __init__(self,id:str="",numero_estudante:str="",nome:str="",email:str="",id_curso:int=""):
+        self.id_estudante=id
+        self.numero_estudante=numero_estudante
         self.nome=nome
-        self.senha=senha
-        self.tipo=tipo
-        self.curso=curso
+        self.email=email
+        self.id_curso=id_curso
+
 
     
     def autenticarEstudande(self):
         """Verifica se o usuario esta na base de dados e o autentica no sistema"""
         gestorBD= GestorBaseDados(nomeBaseDados)
-        comandoSql= "SELECT * FROM usuarios WHERE matricula = ? and senha=?"
-        resultado=gestorBD.consultarBD(comandoSql,(self.matricula,self.senha))
+        comandoSql= "SELECT * FROM usuarios WHERE email = ? and numero_estudante=?"
+        resultado=gestorBD.consultarBD(comandoSql,(self.email,self.numero_estudante))
         
        # print(resultado)
         #print("Achei")

@@ -1,26 +1,35 @@
 from controller.client import Client
 import threading
 
-class CTA(Client):
+class EstudanteController(Client):
 
     def __init__(self,nome:str):
         """Initialize a new CTA Object"""
 
         super().__init__() # Initialize the client
         self.nome=nome
-        self.listaUsuarios=[]
 
-    def adicionarPessoa(self):
-        nome=input("Digite nome: ")
-        #email=input("Digite email: ")
-        email=nome+"@gmail.com"
-        comandoSql="INSERT INTO usuarios (nome,email) VALUES (?,?)"
+    def autenticarEstudande(self,email:str,numero_estudante:int):
+        
+        
         mensagem={}
-        mensagem["type"]="add_usuario"
-        mensagem["value"]=(nome,email)
-        mensagem["sql"]=comandoSql
+        mensagem["tipo_usuario"]="estudante"
+        mensagem["operacao"]="autenticar_estudante"
+        mensagem["valor"]=(email,numero_estudante)
+        #mensagem["sql"]=comandoSql
         print(mensagem)
         self.sendMessage(mensagem)
+        dados=self.receiveMessage()
+        
+        return dados # Retorna os dados enviados pelo servidor
+
+
+    def buscarNotasAluno(self,id_aluno):
+        
+        pass
+
+
+
 
     def removerPessoa(self):
 

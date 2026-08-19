@@ -152,6 +152,7 @@ class GestorBaseDados:
                 nota2 REAL, 
                 nota3 REAL, 
                 frequencia REAL DEFAULT 0,
+                FOREIGN KEY (id_estudante) REFERENCES estudante(id_estudante),
                 FOREIGN KEY (id_docente) REFERENCES docente(id_docente),
                 FOREIGN KEY (id_cadeira) REFERENCES cadeira(id_cadeira)
                
@@ -328,7 +329,7 @@ class GestorBaseDados:
         self.criarTabelaTurma()
         self.criarTabelaNotas()
         self.criarTabelaNotificacoes()
-        #self.inserirDadosDeExemplo()  #Henriques vais modiciar esse metodo inserirDadosExemplo, colocando os valores em ondem de criacao das tabelas, primeiro curso, depois estudante e por ai em diante
+        self.inserirDadosDeExemplo()  #Henriques vais modiciar esse metodo inserirDadosExemplo, colocando os valores em ondem de criacao das tabelas, primeiro curso, depois estudante e por ai em diante
         # Nao precisas inserir as notificacoes elas sao geradas pelo sistema....
         
         

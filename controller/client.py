@@ -25,10 +25,7 @@ class Client:
         """Sends a message to the server"""
         encodedMessage=json.dumps(message).encode(self.FORMAT) # Converts a string into a bytes object
         self.ClientSocket.sendall(encodedMessage)
-        #receive_thread = threading.Thread(target=self.receiveMessages, daemon=True) #Thread para receber mensagens do servidor
-        #receive_thread.start()
-
-        
+ 
 
 
     def receiveMessage(self):

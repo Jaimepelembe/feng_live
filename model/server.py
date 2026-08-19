@@ -13,6 +13,7 @@ class Server:
         self.PORT=port 
         self.FORMAT=format
         self.serverSocket=None
+        self.connected=True
        # self.gestorBD=GestorBaseDados(nomeBaseDados)
 
     def start(self):
@@ -38,50 +39,17 @@ class Server:
         
         print(F"[NEW CONNECTION] {addr} connected.")
         try:
-            connected=True
-            while connected:
+
+            while self.connected:
                 message=connection.recv(1024)#decode(self.FORMAT) #buffer size is 1024 bits
                 message=json.loads(message)
                 
-                if message: # is not None
+                if message: # is not None     
+                    self.processarMensagem(message,connection)
+                
+                print(f"{addr}: {message}")
+
                     
-
-                    if message == "disconnect":
-                        self.closeConnection(connection)
-                        connected=False
-
-                    print(f"{addr}: {message}")
-
-                    operacao=message.get("type")
-                    messageToSend=""
-                    
-                    if operacao=="add_usuario":
-                        comandoSql=message["sql"]
-                        usuario=message["value"]
-                        resultado=self.gestorBD.inserirLinha(comandoSql,usuario)
-                        if resultado== True:
-                            messageToSend="Usuario adicionado com sucesso"
-
-                    elif operacao=="remove_usuario":
-                        comandoSql=message["sql"]
-                        valor=message["value"]
-                        resultado=self.gestorBD.DeletarLinha(comandoSql,valor)
-                        if resultado== True:
-                            messageToSend="Usuario removido com sucesso"
-
-                    elif operacao =="buscar_todos":
-                        comandoSql=message["sql"]
-                        resultado=self.gestorBD.consultarBD(comandoSql)
-                        #print(f"Resultado da consulta: {resultado}")
-                        if resultado:
-                                messageToSend=resultado
-
-                        else:
-                            messageToSend="A base de dados nao tem nenhum registo."
-
-                    #Send Message to the client
-                    messageToSend=json.dumps(messageToSend).encode(self.FORMAT)# Converts the object into a string of bytes .encode(self.FORMAT)
-                    connection.sendall(messageToSend)
 
 
         except AttributeError as e:
@@ -95,6 +63,61 @@ class Server:
         """"Closes the connection between the server and the user"""
         connection.close()
 
+    def processarMensagem(self,message,connection):
+        """Processa a mensagem recebida pelo servidor"""
+        
+        if message == "disconnect":
+            self.closeConnection(connection)
+            self.connected=False
+
+            
+     
+        tipo_usuario=message.get("tipo_usuario")
+        operacao=message.get("operacao")
+        messageToSend=""
+                    
+                    
+        if tipo_usuario== "estudante":
+            from estudante import Estudante
+            
+            if operacao== "autenticar_estudante":
+                dados=message["valor"]
+                email=dados[0]
+                numero_estudante=dados[1]
+                estudante=Estudante(email=email,numero_estudante=numero_estudante)
+                estudante=estudante.autenticarEstudande()   #Recebe o estudante ja autenticado
+                messageToSend={}
+                if estudante !=None:
+                    messageToSend["valor"]={"id":estudante.id,
+                                            "numero_estudante":estudante.numero_estudante,
+                                            "nome":estudante.nome,
+                                            "email":estudante.email,
+                                            "id_curso":estudante.id_curso
+                                        }          
+                else:
+                    messageToSend[valor]=None
+
+        
+        elif operacao=="remove_usuario":
+            comandoSql=message["sql"]
+            valor=message["value"]
+            resultado=self.gestorBD.DeletarLinha(comandoSql,valor)
+            if resultado== True:
+                messageToSend="Usuario removido com sucesso"
+
+        elif operacao =="buscar_todos":
+            comandoSql=message["sql"]
+            resultado=self.gestorBD.consultarBD(comandoSql)
+            #print(f"Resultado da consulta: {resultado}")
+            if resultado:
+                    messageToSend=resultado
+
+            else:
+                messageToSend="A base de dados nao tem nenhum registo."
+
+        #Send Message to the client
+        messageToSend=json.dumps(messageToSend).encode(self.FORMAT)# Converts the object into a string of bytes .encode(self.FORMAT)
+        connection.sendall(messageToSend)
 
 if __name__ == '__main__':
     server = Server()

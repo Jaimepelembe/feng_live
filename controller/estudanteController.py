@@ -15,7 +15,7 @@ class EstudanteController(Client):
         mensagem["operacao"]="autenticar_estudante"
         mensagem["valor"]=(email,numero_estudante)
         #mensagem["sql"]=comandoSql
-        print(mensagem)
+        print(f"mensagem enviada para server: {mensagem}")
         self.sendMessage(mensagem)
         dados=self.receiveMessage()
         

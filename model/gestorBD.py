@@ -118,6 +118,7 @@ class GestorBaseDados:
 
         else:
             resultado=cursor.fetchall()
+            print(f"dado da BD {resultado}")
             return resultado
       
         finally:

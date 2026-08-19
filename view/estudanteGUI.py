@@ -134,7 +134,7 @@ class EstudanteGUI:
         try:
             estudanteController.start()
             dados=estudanteController.autenticarEstudande(email,nrEstudante)
-            print(dados)
+            print(f"GUI: {dados}")
             
             if dados:
                 dados=dados["valor"]
@@ -163,8 +163,8 @@ class EstudanteGUI:
 
             
             # Notificações/broadcasts chegam via callback da thread de leitura do BaseClient
-            self.client.on_push = self.handle_push
-            self.client.on_disconnect = self.handle_disconnect
+            #self.client.on_push = self.handle_push
+            #self.client.on_disconnect = self.handle_disconnect
 
 
                 
@@ -185,13 +185,13 @@ class EstudanteGUI:
             
             if event == sg.WIN_CLOSED:
                 self.running = False
-                if self.connected:
-                    pass
+                #if self.connected:
+                #    pass
                    #  self.disconnect()
                 break
             
             if event == '-CONNECT-':
-                
+                self.autenticarEstudante(values)
                 pass
                 #self.connect(values)
             

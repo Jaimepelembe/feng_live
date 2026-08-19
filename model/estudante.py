@@ -15,7 +15,7 @@ class Estudante:
     def autenticarEstudande(self):
         """Verifica se o usuario esta na base de dados e o autentica no sistema"""
         gestorBD= GestorBaseDados(nomeBaseDados)
-        comandoSql= "SELECT * FROM usuarios WHERE email = ? and numero_estudante=?"
+        comandoSql= "SELECT * FROM estudante WHERE email = ? and numero_estudante=?"
         resultado=gestorBD.consultarBD(comandoSql,(self.email,self.numero_estudante))
         
        # print(resultado)
@@ -25,7 +25,7 @@ class Estudante:
         
                 self.id=estudante[0]
                 self.nome=estudante[2]
-                self.curso=estudante[5]
+                self.id_curso=estudante[4]
             return self
         else:
             return None

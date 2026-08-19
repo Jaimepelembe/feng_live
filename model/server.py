@@ -82,15 +82,11 @@ class Server:
             
             if operacao== "autenticar_estudante":
                 dados=message.get("valor")
-                print(f"Lendo no server {dados}")
                 email,numero_estudante=dados
-                numero_estudante=dados[1]
-                print(f"numero estu{numero_estudante}")
                 estudante=Estudante(email=email,numero_estudante=numero_estudante)
                 estudante=estudante.autenticarEstudande()   #Recebe o estudante ja autenticado
-                print(f"Estudante da BD {estudante.nome}")
                 messageToSend={}
-                #estudante=estudante[0]
+                #print(f"Estudante da BD {estudante.nome}")
                 if estudante !=None:
                     messageToSend["valor"]={"id":estudante.id,
                                             "numero_estudante":estudante.numero_estudante,
@@ -101,6 +97,17 @@ class Server:
                 else:
                     messageToSend["valor"]=None
 
+            if operacao== "buscar_notas_estudante":
+                dados=message.get("valor")
+                idEstudante=dados
+                estudante=Estudante()
+                notas=estudante.buscarNotasAluno(idEstudante)   #Recebe o estudante ja autenticado
+                messageToSend=notas                   
+
+       
+       
+       
+       
         
         elif operacao=="remove_usuario":
             comandoSql=message["sql"]
@@ -120,7 +127,7 @@ class Server:
                 messageToSend="A base de dados nao tem nenhum registo."
 
         #Send Message to the client
-        print(f"retorno BD {messageToSend}")
+       # print(f"retorno BD {messageToSend}")
         messageToSend=json.dumps(messageToSend).encode(self.FORMAT)# Converts the object into a string of bytes .encode(self.FORMAT)
 
         connection.sendall(messageToSend)

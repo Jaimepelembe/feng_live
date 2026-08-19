@@ -118,7 +118,7 @@ class GestorBaseDados:
 
         else:
             resultado=cursor.fetchall()
-            print(f"dado da BD {resultado}")
+            #print(f"dado da BD {resultado}")
             return resultado
       
         finally:
@@ -677,6 +677,28 @@ class GestorBaseDados:
            
 
 #gestor=GestorBaseDados("feng_live.db")
+comandoSql=    """
+                SELECT 
+            cadeira.nome AS disciplina,
+            notas.nota1,
+            notas.nota2,
+            notas.nota3,
+            ROUND((notas.nota1 + notas.nota2 + notas.nota3) / 3.0, 2) AS media,
+            notas.frequencia AS frequencia,  
+            cadeira.semestre
+        FROM 
+            estudante
+            INNER JOIN inscricao ON estudante.id_estudante = inscricao.id_estudante
+            INNER JOIN cadeira ON inscricao.id_cadeira = cadeira.id_cadeira
+            INNER JOIN notas ON notas.id_estudante = estudante.id_estudante 
+                            AND notas.id_cadeira = cadeira.id_cadeira
+        WHERE 
+            estudante.id_estudante = 1;   -- substitua o 1 pelo ID do estudante desejado
+                """
+#dados=gestor.consultarBD(comandoSql)
+#print(dados)
+
+
 #gestor.inicializarTabelas()
 
 """

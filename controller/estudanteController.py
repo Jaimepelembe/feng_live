@@ -15,16 +15,32 @@ class EstudanteController(Client):
         mensagem["operacao"]="autenticar_estudante"
         mensagem["valor"]=(email,numero_estudante)
         #mensagem["sql"]=comandoSql
-        print(f"mensagem enviada para server: {mensagem}")
+        #print(f"mensagem enviada para server: {mensagem}")
         self.sendMessage(mensagem)
         dados=self.receiveMessage()
         
         return dados # Retorna os dados enviados pelo servidor
 
 
-    def buscarNotasAluno(self,id_aluno):
+    def buscarNotasAluno(self,id_estudante):
         
-        pass
+        mensagem={}
+        mensagem["tipo_usuario"]="estudante"
+        mensagem["operacao"]="buscar_notas_estudante"
+        mensagem["valor"]=id_estudante
+        #mensagem["sql"]=comandoSql
+        #print(f"mensagem enviada para server: {mensagem}")
+        self.sendMessage(mensagem)
+        dados=self.receiveMessage()
+        print(f"Dados no controller {dados}")
+        
+        return dados # Retorna os dados enviados pelo servidor   
+
+    def desconectarDoServidor(self):
+        mensagem="disconnect"
+        self.sendMessage(mensagem)
+        #dados=self.receiveMessage()
+        
 
 
 

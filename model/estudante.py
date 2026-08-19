@@ -30,18 +30,30 @@ class Estudante:
         else:
             return None
   
-    def buscarNotasAluno(self):
+    def buscarNotasAluno(self,id_estudante):
         """Busca todas as notas de um aluno com base no seu ID"""
         gestorBD= GestorBaseDados(nomeBaseDados)
-        comandoSql=    """
-            SELECT d.codigo, d.nome, n.nota1, n.nota2, n.nota3, n.nota_final, n.frequencia, n.semestre, n.ano
-            FROM notas n  JOIN disciplinas d ON n.disciplina_id = d.id
-            WHERE n.aluno_id = ?
-            ORDER BY n.ano DESC, n.semestre DESC
-        """
+        comandoSql=    f"""
+                        SELECT 
+                    cadeira.nome AS disciplina,
+                    notas.nota1,
+                    notas.nota2,
+                    notas.nota3,
+                    ROUND((notas.nota1 + notas.nota2 + notas.nota3) / 3.0, 2) AS media,
+                    notas.frequencia AS frequencia,  
+                    cadeira.semestre
+                FROM 
+                    estudante
+                    INNER JOIN inscricao ON estudante.id_estudante = inscricao.id_estudante
+                    INNER JOIN cadeira ON inscricao.id_cadeira = cadeira.id_cadeira
+                    INNER JOIN notas ON notas.id_estudante = estudante.id_estudante 
+                                    AND notas.id_cadeira = cadeira.id_cadeira
+                WHERE 
+                    estudante.id_estudante = ?;   -- substitua o 1 pelo ID do estudante desejado
+                        """
         
-        notas= gestorBD.consultarBD(comandoSql,(self.id,))
-        print(notas)
+        notas= gestorBD.consultarBD(comandoSql,(id_estudante,))
+        print("Notas da BD {notas}")
         if notas:
             return notas
         else:

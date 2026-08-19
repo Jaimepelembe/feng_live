@@ -18,6 +18,8 @@ class EstudanteGUI:
         self.id_curso=""
         self.window=None
         self.running=True # The window is running?
+        self.notas=None
+        self.mediaGeral=0
         self.create_window()
     
     def create_window(self):
@@ -134,7 +136,7 @@ class EstudanteGUI:
         try:
             estudanteController.start()
             dados=estudanteController.autenticarEstudande(email,nrEstudante)
-            print(f"GUI: {dados}")
+            #print(f"GUI: {dados}")
             
             if dados:
                 dados=dados["valor"]
@@ -152,6 +154,8 @@ class EstudanteGUI:
                 self.window['-DISCONNECT-'].update(disabled=False)
                 
                 # Busca dados iniciais
+                self.buscarNotasEstudante()
+                self.calcularMediaGeral()
                 #self.update_notas()
                 #self.update_media()
                 
@@ -159,8 +163,7 @@ class EstudanteGUI:
                 sg.popup_ok('✅ Conectado com sucesso!')
          
     
-            
-
+    
             
             # Notificações/broadcasts chegam via callback da thread de leitura do BaseClient
             #self.client.on_push = self.handle_push
@@ -176,7 +179,61 @@ class EstudanteGUI:
             sg.popup_error(f'❌ Erro ao conectar: {e}') 
    
    
-   
+    def buscarNotasEstudante(self):
+        """Busca as notas do aluno na BD"""
+        try:
+            
+            if not self.id_estudante: #or not nrEstudante:
+                sg.popup_error('Voce nao esta logado!')
+                return
+
+            estudanteController.start()
+        
+            notas=estudanteController.buscarNotasAluno(self.id_estudante)            
+            
+            
+            
+            if notas :
+                self.notas = notas
+                
+                self.window['-NOTAS_TABLE-'].update(values=notas)
+                self.window['-DISCIPLINAS-'].update(str(len(notas)))
+            else:
+                message="Voce nao tem nenhuma nota."
+                sg.popup(message, title='⚠️ Aviso')
+
+            
+        except Exception as e:
+            sg.popup_error(f'❌ Erro ao buscar as notas do estudante: {e}') 
+            
+    def calcularMediaGeral(self):
+        soma=0
+        for nota in self.notas:
+            soma+=nota[4]
+            
+        self.mediaGeral=soma/len(self.notas)
+        
+        self.window['-MEDIA-'].update(round(self.mediaGeral,2))
+        #print()
+    
+    def desconectar(self):
+        """Desconecta do servidor"""
+        try:
+            estudanteController=EstudanteController() 
+             
+            self.window['-STATUS-'].update('Desconectado', text_color='#E74C3C')
+            self.window['-NOME-'].update('')
+            self.window['-CONNECT-'].update(disabled=False)
+            self.window['-DISCONNECT-'].update(disabled=True)
+            self.window['-NOTAS_TABLE-'].update(values=[])
+            self.window['-MEDIA-'].update('0.0')
+            self.window['-DISCIPLINAS-'].update('0')
+            self.window['-CHAT_DISPLAY-'].update('')
+            
+            sg.popup_ok('👋 Desconectado com sucesso!')
+            
+        except Exception as e:
+            sg.popup_error(f'❌ Erro ao desconectar: {e}')  
     
     def run(self):
         """Loop principal da GUI"""
@@ -196,6 +253,7 @@ class EstudanteGUI:
                 #self.connect(values)
             
             elif event == '-DISCONNECT-':
+                self.desconectar()
                 pass
                 #self.disconnect()
             

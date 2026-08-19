@@ -250,24 +250,20 @@ class GestorBaseDados:
         
             cursor=self.conexao.cursor() # Utilizamos o cursor para executar comandos sql
             
-            #Verificar se existem estudantes na base de dados
-            comandoSql= "SELECT COUNT(*) FROM usuarios"
+            #Verificar se existem cursos na base de dados
+            comandoSql= "SELECT COUNT(*) FROM cursos"
             cursor.execute(comandoSql)
             if cursor.fetchone()[0] > 0:
                 pass
             else:
-                usuarios = [
-                        ('2024001', 'Alexandre Ntema', '123456', 'aluno', 'Engenharia Informática'),
-                        ('2024002', 'Henrinques Almeida', '123456', 'aluno', 'Engenharia Civil'),
-                        ('2024003', 'Afonso Adolfo', '123456', 'aluno', 'Engenharia Elétrica'),
-                        ('2024004', 'Ana Oliveira', '123456', 'aluno', 'Engenharia Mecânica'),
-                        ('2024005', 'Carlos Mendes', '123456', 'aluno', 'Engenharia Informática'),
-                        ('P001', 'Prof. Jaime', '123456', 'professor', None),
-                        ('P002', 'Prof. Ivone', '123456', 'professor', None),
-                    ]
-                comandoSql= "INSERT INTO usuarios (matricula, nome, senha, tipo, curso) VALUES (?, ?, ?, ?, ?)"
+                cursos = [
+                 (1, "Engenharia Informatica"),
+                (2, "Engenharia Electrica"),
+                (3, "Engenharia Electronica")
+]
+                comandoSql= "INSERT INTO cursos (nome) VALUES (?)"
                 
-                self.inserirVariasLinhas(comandoSql,usuarios)
+                self.inserirVariasLinhas(comandoSql,cursos)
                
                 
             #Verificar se existem disciplinas na base de dados
@@ -276,38 +272,230 @@ class GestorBaseDados:
             if cursor.fetchone()[0] > 0:
                 pass
             else:
-                disciplinas = [
-                ('INF101', 'Programação I', 6, 4),
-                ('MAT101', 'Cálculo I', 6, 4),
-                ('FIS101', 'Física I', 7, 4),
-                ('INF201', 'Programação II', 6, 4),
-                ('MAT201', 'Cálculo II', 7, 4),]
+                cadeiras = [
+                # Engenharia Informática
+                ("Programação II", 2, 1),
+                ("Estruturas de Dados", 2, 1),
+                ("Base de Dados", 2, 1),
+                ("Sistemas Operativos", 2, 1),
+                ("Redes de Computadores I", 2, 1),
+                ("Matemática Discreta", 2, 1),
+
+                # Engenharia Eléctrica
+                ("Circuitos Eléctricos II", 2, 2),
+                ("Electrónica Analógica", 2, 2),
+                ("Máquinas Eléctricas I", 2, 2),
+                ("Electromagnetismo", 2, 2),
+                ("Sistemas Digitais", 2, 2),
+                ("Instrumentação Eléctrica", 2, 2),
+
+                # Engenharia Electrónica
+                ("Circuitos Electrónicos II", 2, 3),
+                ("Microprocessadores", 2, 3),
+                ("Electrónica Digital", 2, 3),
+                ("Sinais e Sistemas", 2, 3),
+                ("Comunicações I", 2, 3),
+                ("Sistemas de Controlo", 2, 3)]
+
                 
-                comandoSql= "INSERT INTO disciplinas (codigo, nome, professor_id, creditos) VALUES (?, ?, ?, ?)"
-                
-                self.inserirVariasLinhas(comandoSql,disciplinas)
+                comandoSql= "INSERT INTO cadeiras (nome, semestre, id_curso) VALUES (?, ?, ?)"          
+                self.inserirVariasLinhas(comandoSql,cadeiras)
          
             
-            #Verificar se existem notas na base de dados
-            comandoSql= "SELECT COUNT(*) FROM notas"
+            #Verificar se existem estudantes na base de dados
+            comandoSql= "SELECT COUNT(*) FROM estudantes"
             cursor.execute(comandoSql)
             if cursor.fetchone()[0]>0:
                 pass
             else:
-                notas = [
-                (1, 1, 14, 16, 15, 15.0, 85, '2024.1', 2024),
-                (1, 2, 10, 8, 12, 10.0, 75, '2024.1', 2024),
-                (2, 1, 12, 10, 11, 11.0, 90, '2024.1', 2024),
-                (2, 2, 15, 14, 16, 15.0, 85, '2024.1', 2024),
-                (3, 2, 13, 12, 14, 13.0, 80, '2024.1', 2024),]   
-                #print("Dados de exemplo inseridos com sucesso!") 
+                estudantes = [
+                    # Engenharia Informatica
+                    ("202600", "Jaime Fernando", "jaime.fernando@fenglive.com", 1),
+                    ("202601", "Carlos Manuel", "carlos.manuel@fenglive.com", 1),
+                    ("202602", "Ana Paula", "ana.paula@fenglive.com", 1),
+                    ("202603", "Edson Alberto", "edson.alberto@fenglive.com", 1),
+                    ("202604", "Marta Isabel", "marta.isabel@fenglive.com", 1),
+                    ("202605", "Nelson Antonio", "nelson.antonio@fenglive.com", 1),
+
+                    # Engenharia Electrica
+                    ("202606", "Bruno Mateus", "bruno.mateus@fenglive.com", 2),
+                    ("202607", "Daniel Jose", "daniel.jose@fenglive.com", 2),
+                    ("202608", "Ines Maria", "ines.maria@fenglive.com", 2),
+                    ("202609", "Pedro Alberto", "pedro.alberto@fenglive.com", 2),
+                    ("202610", "Sofia Manuel", "sofia.manuel@fenglive.com", 2),
+                    ("202611", "Antonio Ernesto", "antonio.ernesto@fenglive.com", 2),
+
+                    # Engenharia Electronica
+                    ("202612", "Mateus Paulo", "mateus.paulo@fenglive.com", 3),
+                    ("202613", "Rui Manuel", "rui.manuel@fenglive.com", 3),
+                    ("202614", "Beatriz Alice", "beatriz.alice@fenglive.com", 3),
+                    ("202615", "Fernando Luis", "fernando.luis@fenglive.com", 3),
+                    ("202616", "Claudia Teresa", "claudia.teresa@fenglive.com", 3),
+                    ("202617", "Tomas Antonio", "tomas.antonio@fenglive.com", 3)
+                ]
                 
-                comandoSql= """INSERT INTO notas (aluno_id, disciplina_id, nota1, nota2, nota3, nota_final, frequencia, semestre, ano) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""  
-                self.inserirVariasLinhas(comandoSql,notas)
+                comandoSql= """INSERT INTO estudantes (numero_estudante, nome, email, id_curso) VALUES (?, ?, ?, ?)"""  
+                self.inserirVariasLinhas(comandoSql,estudantes)
             
-           # print("Dados de exemplo inseridos com sucesso!")
+            #Verificar se existem estudantes na base de dados
+            comandoSql= "SELECT COUNT(*) FROM docentes"
+            cursor.execute(comandoSql)
+            if cursor.fetchone()[0]>0:
+                pass
+            else:
+                docentes = [
+                ("DOC001", "Alberto Joaquim", "alberto.joaquim@fenglive.com"),
+                ("DOC002", "Manuel Ernesto", "manuel.ernesto@fenglive.com"),
+                ("DOC003", "Carlos Alberto", "carlos.alberto@fenglive.com"),
+                ("DOC004", "Paulo Antonio", "paulo.antonio@fenglive.com"),
+                ("DOC005", "Fernando Manuel", "fernando.manuel@fenglive.com"),
+                ("DOC006", "Joao Carlos", "joao.carlos@fenglive.com"),
+
+                ("DOC007", "Ricardo Jose", "ricardo.jose@fenglive.com"),
+                ("DOC008", "Eduardo Paulo", "eduardo.paulo@fenglive.com"),
+                ("DOC009", "Armando Luis", "armando.luis@fenglive.com"),
+                ("DOC010", "Antonio Manuel", "antonio.manuel@fenglive.com"),
+                ("DOC011", "Jose Fernando", "jose.fernando@fenglive.com"),
+                ("DOC012", "Miguel Ernesto", "miguel.ernesto@fenglive.com"),
+
+                ("DOC013", "Augusto Pedro", "augusto.pedro@fenglive.com"),
+                ("DOC014", "Filipe Antonio", "filipe.antonio@fenglive.com"),
+                ("DOC015", "Nelson Manuel", "nelson.manuel@fenglive.com"),
+                ("DOC016", "Guilherme Paulo", "guilherme.paulo@fenglive.com"),
+                ("DOC017", "Helder Joaquim", "helder.joaquim@fenglive.com"),
+                ("DOC018", "Victor Manuel", "victor.manuel@fenglive.com")
+            ]
             
-    
+                comandoSql= """INSERT INTO docentes (numero_docente, nome, email) VALUES (?, ?, ?)"""  
+                self.inserirVariasLinhas(comandoSql,docentes)
+            
+            #Verificar se existem uma turma na base de dados
+            comandoSql= "SELECT COUNT(*) FROM turma"
+            cursor.execute(comandoSql)
+            if cursor.fetchone()[0]>0:
+                pass
+            else:
+                turmas = [
+                    # Programacao II
+                    ("Laboral", 2026, 1, 1),
+                    ("Pos-Laboral", 2026, 1, 1),
+
+                    # Estruturas de Dados
+                    ("Laboral", 2026, 2, 2),
+                    ("Pos-Laboral", 2026, 2, 2),
+
+                    # Base de Dados
+                    ("Laboral", 2026, 3, 3),
+                    ("Pos-Laboral", 2026, 3, 3),
+
+                    # Sistemas Operativos
+                    ("Laboral", 2026, 4, 4),
+                    ("Pos-Laboral", 2026, 4, 4),
+
+                    # Redes de Computadores I
+                    ("Laboral", 2026, 5, 5),
+                    ("Pos-Laboral", 2026, 5, 5),
+
+                    # Matematica Discreta
+                    ("Laboral", 2026, 6, 6),
+                    ("Pos-Laboral", 2026, 6, 6),
+
+                    # Circuitos Electricos II
+                    ("Laboral", 2026, 7, 7),
+                    ("Pos-Laboral", 2026, 7, 7),
+
+                    # Electronica Analogica
+                    ("Laboral", 2026, 8, 8),
+                    ("Pos-Laboral", 2026, 8, 8),
+
+                    # Maquinas Electricas I
+                    ("Laboral", 2026, 9, 9),
+                    ("Pos-Laboral", 2026, 9, 9),
+
+                    # Electromagnetismo
+                    ("Laboral", 2026, 10, 10),
+                    ("Pos-Laboral", 2026, 10, 10),
+
+                    # Sistemas Digitais
+                    ("Laboral", 2026, 11, 11),
+                    ("Pos-Laboral", 2026, 11, 11),
+
+                    # Instrumentacao Electrica
+                    ("Laboral", 2026, 12, 12),
+                    ("Pos-Laboral", 2026, 12, 12),
+
+                    # Circuitos Electronicos II
+                    ("Laboral", 2026, 13, 13),
+                    ("Pos-Laboral", 2026, 13, 13),
+
+                    # Microprocessadores
+                    ("Laboral", 2026, 14, 14),
+                    ("Pos-Laboral", 2026, 14, 14),
+
+                    # Electronica Digital
+                    ("Laboral", 2026, 15, 15),
+                    ("Pos-Laboral", 2026, 15, 15),
+
+                    # Sinais e Sistemas
+                    ("Laboral", 2026, 16, 16),
+                    ("Pos-Laboral", 2026, 16, 16),
+
+                    # Comunicacoes I
+                    ("Laboral", 2026, 17, 17),
+                    ("Pos-Laboral", 2026, 17, 17),
+
+                    # Sistemas de Controlo
+                    ("Laboral", 2026, 18, 18),
+                    ("Pos-Laboral", 2026, 18, 18)
+                        ]
+                comandoSql= """INSERT INTO turma (horario, ano_letivo, id_cadeira,id_docente) VALUES (?, ?, ?, ?)"""  
+                self.inserirVariasLinhas(comandoSql,turmas)
+ 
+
+            #Verificar se existem inscricoes na base de dados
+            comandoSql= "SELECT COUNT(*) FROM inscricao"
+            cursor.execute(comandoSql)
+            if cursor.fetchone()[0]>0: 
+                pass
+            else:
+                inscricoes = []
+                for estudante_id in range(1, 19):
+
+                    if estudante_id <= 6:
+                        cadeiras_curso = range(1, 7)
+
+                    elif estudante_id <= 12:
+                        cadeiras_curso = range(7, 13)
+
+                    else:
+                        cadeiras_curso = range(13, 19)
+
+                    for cadeira_id in cadeiras_curso:
+                        inscricoes.append(
+                            (  2,
+                                "1",
+                                estudante_id,
+                                cadeira_id
+                            )
+                        )
+
+                comandoSql= """INSERT INTO inscricao (semestre, estado,id_estudante,id_cadeira) VALUES (?, ?, ?, ?)"""  
+                self.inserirVariasLinhas(comandoSql,inscricoes)
+                              
+
+            #Verificar se existem inscricoes na base de dados
+            comandoSql= "SELECT COUNT(*) FROM notas"
+            cursor.execute(comandoSql)
+            if cursor.fetchone()[0]>0: 
+                pass
+            else:  
+                notas=self.gerarNotas()   
+                comandoSql= """INSERT INTO notas (nota1, nota2, nota3, frequencia,
+                id_estudante, id_docente, id_cadeira) VALUES (?, ?, ?, ?, ?, ?, ?)"""  
+                self.inserirVariasLinhas(comandoSql,notas)     
+                
+                
+                
         except TypeError as e:
             print(f"Type Error: {e}")
     
@@ -317,6 +505,43 @@ class GestorBaseDados:
         except Exception as e:
             print(f"Error: {e}")
         
+    
+    def gerarNotas(self):
+        from random import randint
+        notas = []
+        for estudante_id in range(1, 19):
+
+            if estudante_id <= 6:
+                cadeiras_curso = range(1, 7)
+
+            elif estudante_id <= 12:
+                cadeiras_curso = range(7, 13)
+
+            else:
+                cadeiras_curso = range(13, 19)
+
+            for cadeira_id in cadeiras_curso:
+
+                docente_id = cadeira_id
+
+                nota1 = randint(12,20)
+                nota2 = randint(12,20)
+                nota3 = randint(12,20)
+                frequencia = randint(85,100)
+
+                notas.append(
+                    (
+                        nota1,
+                        nota2,
+                        nota3,
+                        frequencia,
+                        estudante_id,
+                        docente_id,
+                        cadeira_id
+                    )
+                )
+        return notas
+    
     
     def inicializarTabelas(self):
         """Inicializa a base de dados criando as tabelas e preencheendo os dados de exemplo caso ela esteja vazia."""
@@ -329,8 +554,7 @@ class GestorBaseDados:
         self.criarTabelaTurma()
         self.criarTabelaNotas()
         self.criarTabelaNotificacoes()
-        self.inserirDadosDeExemplo()  #Henriques vais modiciar esse metodo inserirDadosExemplo, colocando os valores em ondem de criacao das tabelas, primeiro curso, depois estudante e por ai em diante
-        # Nao precisas inserir as notificacoes elas sao geradas pelo sistema....
+        self.inserirDadosDeExemplo()  
         
         
         

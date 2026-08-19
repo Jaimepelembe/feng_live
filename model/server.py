@@ -95,7 +95,7 @@ class Server:
                                             "id_curso":estudante.id_curso
                                         }          
                 else:
-                    messageToSend[valor]=None
+                    messageToSend["valor"]=None
 
         
         elif operacao=="remove_usuario":

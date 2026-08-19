@@ -3,11 +3,9 @@ import threading
 
 class EstudanteController(Client):
 
-    def __init__(self,nome:str):
+    def __init__(self,host:str="localhost",port:int=5000):
         """Initialize a new CTA Object"""
-
-        super().__init__() # Initialize the client
-        self.nome=nome
+        super().__init__(host,port) # Initialize the client
 
     def autenticarEstudande(self,email:str,numero_estudante:int):
         

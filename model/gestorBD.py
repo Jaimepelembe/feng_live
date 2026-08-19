@@ -243,31 +243,120 @@ class GestorBaseDados:
 
     def inserirDadosDeExemplo(self):
         """Insere varios dados de exemplo na base de dados, caso ela esteja vazia."""
-        try:
-            if self.conexao == None:
-                    self.conectarBaseDados()
 
+        if self.conexao == None:
+                self.conectarBaseDados()
+
+    
+        cursor=self.conexao.cursor() # Utilizamos o cursor para executar comandos sql
         
-            cursor=self.conexao.cursor() # Utilizamos o cursor para executar comandos sql
+        #Verificar se existem cursos na base de dados
+        self.inserirCursos(cursor)
+        
+        #Verificar se existem disciplinas na base de dados
+        self.inserirCadeiras(cursor)
+        #self.inserirEstudantes(cursor)
+        #self.inserirDocentes(cursor)
+        #self.inserirTurmas(cursor)
+        #self.inserirInscricoes(cursor)
+        #self.inserirNotas(cursor)
             
+
+               
+                
+
+         
+         
+
+
+            
+
+            
+            
+ 
+
+
+                              
+
+ 
+            
+            
+                
+            
+                
+       
+        
+    
+    def gerarNotas(self):
+        from random import randint
+        notas = []
+        for estudante_id in range(1, 19):
+
+            if estudante_id <= 6:
+                cadeiras_curso = range(1, 7)
+
+            elif estudante_id <= 12:
+                cadeiras_curso = range(7, 13)
+
+            else:
+                cadeiras_curso = range(13, 19)
+
+            for cadeira_id in cadeiras_curso:
+
+                docente_id = cadeira_id
+
+                nota1 = randint(12,20)
+                nota2 = randint(12,20)
+                nota3 = randint(12,20)
+                frequencia = randint(85,100)
+
+                notas.append(
+                    (
+                        nota1,
+                        nota2,
+                        nota3,
+                        frequencia,
+                        estudante_id,
+                        docente_id,
+                        cadeira_id
+                    )
+                )
+        return notas
+
+    def inserirCursos(self,cursor):
+        
+        try:
             #Verificar se existem cursos na base de dados
-            comandoSql= "SELECT COUNT(*) FROM cursos"
+            comandoSql= "SELECT COUNT(*) FROM curso"
             cursor.execute(comandoSql)
             if cursor.fetchone()[0] > 0:
                 pass
             else:
                 cursos = [
-                 (1, "Engenharia Informatica"),
-                (2, "Engenharia Electrica"),
-                (3, "Engenharia Electronica")
-]
-                comandoSql= "INSERT INTO cursos (nome) VALUES (?)"
+                 ("Engenharia Informatica",),
+                ("Engenharia Electrica",),
+                ("Engenharia Electronica",)]
+                
+                comandoSql= "INSERT INTO curso (nome) VALUES (?)"
                 
                 self.inserirVariasLinhas(comandoSql,cursos)
-               
+                
+        except TypeError as e:
+            print(f"Type Error: {e}")
+    
+        except sqlite3.IntegrityError as e:
+            print(f"Integrity Error: {e}")
+    
+        except Exception as e:
+            print(f"Error: {e}")
+        
+    
+    def inserirCadeiras(self,cursor):
+        
+        try:
                 
             #Verificar se existem disciplinas na base de dados
-            comandoSql= "SELECT COUNT(*) FROM disciplinas"
+            comandoSql= "SELECT COUNT(*) FROM cadeira"
             cursor.execute(comandoSql)
             if cursor.fetchone()[0] > 0:
                 pass
@@ -298,10 +387,23 @@ class GestorBaseDados:
                 ("Sistemas de Controlo", 2, 3)]
 
                 
-                comandoSql= "INSERT INTO cadeiras (nome, semestre, id_curso) VALUES (?, ?, ?)"          
+                comandoSql= "INSERT INTO cadeira (nome, semestre, id_curso) VALUES (?, ?, ?)"          
                 self.inserirVariasLinhas(comandoSql,cadeiras)
-         
-            
+                
+        except TypeError as e:
+            print(f"Type Error: {e}")
+    
+        except sqlite3.IntegrityError as e:
+            print(f"Integrity Error: {e}")
+    
+        except Exception as e:
+            print(f"Error: {e}")
+    
+    
+    def inserirEstudantes(self,cursor):
+        
+        try:
+                    
             #Verificar se existem estudantes na base de dados
             comandoSql= "SELECT COUNT(*) FROM estudantes"
             cursor.execute(comandoSql)
@@ -336,9 +438,22 @@ class GestorBaseDados:
                 
                 comandoSql= """INSERT INTO estudantes (numero_estudante, nome, email, id_curso) VALUES (?, ?, ?, ?)"""  
                 self.inserirVariasLinhas(comandoSql,estudantes)
-            
-            #Verificar se existem estudantes na base de dados
-            comandoSql= "SELECT COUNT(*) FROM docentes"
+                
+        except TypeError as e:
+            print(f"Type Error: {e}")
+    
+        except sqlite3.IntegrityError as e:
+            print(f"Integrity Error: {e}")
+    
+        except Exception as e:
+            print(f"Error: {e}")
+    
+    
+    def inserirDocentes(self,cursor):
+        
+        try:
+                    #Verificar se existem estudantes na base de dados
+            comandoSql= "SELECT COUNT(*) FROM docente"
             cursor.execute(comandoSql)
             if cursor.fetchone()[0]>0:
                 pass
@@ -366,10 +481,22 @@ class GestorBaseDados:
                 ("DOC018", "Victor Manuel", "victor.manuel@fenglive.com")
             ]
             
-                comandoSql= """INSERT INTO docentes (numero_docente, nome, email) VALUES (?, ?, ?)"""  
+                comandoSql= """INSERT INTO docente (numero_docente, nome, email) VALUES (?, ?, ?)"""  
                 self.inserirVariasLinhas(comandoSql,docentes)
-            
-            #Verificar se existem uma turma na base de dados
+        
+        except TypeError as e:
+            print(f"Type Error: {e}")
+    
+        except sqlite3.IntegrityError as e:
+            print(f"Integrity Error: {e}")
+    
+        except Exception as e:
+            print(f"Error: {e}")
+    
+    
+    def inserirTurmas(self,cursor):
+        try:
+        #Verificar se existem uma turma na base de dados
             comandoSql= "SELECT COUNT(*) FROM turma"
             cursor.execute(comandoSql)
             if cursor.fetchone()[0]>0:
@@ -450,8 +577,20 @@ class GestorBaseDados:
                         ]
                 comandoSql= """INSERT INTO turma (horario, ano_letivo, id_cadeira,id_docente) VALUES (?, ?, ?, ?)"""  
                 self.inserirVariasLinhas(comandoSql,turmas)
- 
-
+                
+        except TypeError as e:
+            print(f"Type Error: {e}")
+    
+        except sqlite3.IntegrityError as e:
+            print(f"Integrity Error: {e}")
+    
+        except Exception as e:
+            print(f"Error: {e}")
+    
+    
+    def inserirInscricoes(self,cursor):
+        
+        try:
             #Verificar se existem inscricoes na base de dados
             comandoSql= "SELECT COUNT(*) FROM inscricao"
             cursor.execute(comandoSql)
@@ -481,8 +620,20 @@ class GestorBaseDados:
 
                 comandoSql= """INSERT INTO inscricao (semestre, estado,id_estudante,id_cadeira) VALUES (?, ?, ?, ?)"""  
                 self.inserirVariasLinhas(comandoSql,inscricoes)
-                              
-
+            
+        except TypeError as e:
+            print(f"Type Error: {e}")
+    
+        except sqlite3.IntegrityError as e:
+            print(f"Integrity Error: {e}")
+    
+        except Exception as e:
+            print(f"Error: {e}")
+    
+    
+    def inserirNotas(self,cursor):
+        try:
+        
             #Verificar se existem inscricoes na base de dados
             comandoSql= "SELECT COUNT(*) FROM notas"
             cursor.execute(comandoSql)
@@ -492,9 +643,7 @@ class GestorBaseDados:
                 notas=self.gerarNotas()   
                 comandoSql= """INSERT INTO notas (nota1, nota2, nota3, frequencia,
                 id_estudante, id_docente, id_cadeira) VALUES (?, ?, ?, ?, ?, ?, ?)"""  
-                self.inserirVariasLinhas(comandoSql,notas)     
-                
-                
+                self.inserirVariasLinhas(comandoSql,notas)    
                 
         except TypeError as e:
             print(f"Type Error: {e}")
@@ -505,58 +654,24 @@ class GestorBaseDados:
         except Exception as e:
             print(f"Error: {e}")
         
-    
-    def gerarNotas(self):
-        from random import randint
-        notas = []
-        for estudante_id in range(1, 19):
-
-            if estudante_id <= 6:
-                cadeiras_curso = range(1, 7)
-
-            elif estudante_id <= 12:
-                cadeiras_curso = range(7, 13)
-
-            else:
-                cadeiras_curso = range(13, 19)
-
-            for cadeira_id in cadeiras_curso:
-
-                docente_id = cadeira_id
-
-                nota1 = randint(12,20)
-                nota2 = randint(12,20)
-                nota3 = randint(12,20)
-                frequencia = randint(85,100)
-
-                notas.append(
-                    (
-                        nota1,
-                        nota2,
-                        nota3,
-                        frequencia,
-                        estudante_id,
-                        docente_id,
-                        cadeira_id
-                    )
-                )
-        return notas
-    
-    
     def inicializarTabelas(self):
         """Inicializa a base de dados criando as tabelas e preencheendo os dados de exemplo caso ela esteja vazia."""
         
         self.criarTabelaCurso()
         self.criarTabelaEstudante()
         self.criarTabelaCadeira()
+        
+        """"
         self.criarTabelaInscricao()
         self.criarTabelaDocente()
         self.criarTabelaTurma()
         self.criarTabelaNotas()
         self.criarTabelaNotificacoes()
+        
+                """
         self.inserirDadosDeExemplo()  
         
-        
+
         
            
     def ActualizarLinha(self,comandoSql,parametros:tuple=()):

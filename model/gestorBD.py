@@ -54,73 +54,125 @@ class GestorBaseDados:
             self.conexao.close()
             self.conexao=None
         
-
-    def criarTabelaUsuarios(self):
-        """Cria a tabela usuarios""" """Cria uma tabela na BD caso ela nao exista."""
+    
+    
+    def criarTabelaCurso(self):
+            """Cria a tabela curso""" """Cria uma tabela na BD caso ela nao exista."""
+            comandoSql="""
+           CREATE TABLE IF NOT EXISTS curso (
+                    id_curso INTEGER PRIMARY KEY AUTOINCREMENT,
+                    nome TEXT UNIQUE NOT NULL
+                )
+                """
+    
+            return self.executarComandoSql(comandoSql)    
+    
+    
+    def criarTabelaEstudante(self):
+        """Cria a tabela Estudante""" """Cria uma tabela na BD caso ela nao exista."""
         comandoSql="""
-       CREATE TABLE IF NOT EXISTS usuarios (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                matricula TEXT UNIQUE NOT NULL,
+       CREATE TABLE IF NOT EXISTS estudante (
+                id_estudante INTEGER PRIMARY KEY AUTOINCREMENT,
+                numero_estudante TEXT UNIQUE NOT NULL,
                 nome TEXT NOT NULL,
-                senha TEXT NOT NULL,
-                tipo TEXT NOT NULL CHECK(tipo IN ('aluno', 'professor', 'coordenador')),
-                curso TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                email  TEXT UNIQUE NOT NULL,
+                FOREIGN KEY (id_curso) REFERENCES curso(id_curso)
             )
             """
 
         return self.executarComandoSql(comandoSql)
     
-    def criarTabelaDisciplinas(self):
-        """Cria a tabela disciplinas""" """Cria uma tabela na BD caso ela nao exista."""
+
+    def criarTabelaCadeira(self):
+        """Cria a tabela Cadeira""" """Cria uma tabela na BD caso ela nao exista."""
         comandoSql="""
-        CREATE TABLE IF NOT EXISTS disciplinas (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            codigo TEXT UNIQUE NOT NULL,
-            nome TEXT NOT NULL,
-            professor_id INTEGER,
-            creditos INTEGER DEFAULT 4,
-            FOREIGN KEY (professor_id) REFERENCES usuarios(id)
-        )
+       CREATE TABLE IF NOT EXISTS cadeira (
+                id_cadeira INTEGER PRIMARY KEY AUTOINCREMENT,
+                nome TEXT UNIQUE NOT NULL,
+                semestre INTEGER NOT NULL, 
+                FOREIGN KEY (id_curso) REFERENCES curso(id_curso)
+            )
             """
 
         return self.executarComandoSql(comandoSql)
     
-    
+
+    def criarTabelaInscricao(self):
+        """Cria a tabela inscricao""" """Cria uma tabela na BD caso ela nao exista."""
+        comandoSql="""
+       CREATE TABLE IF NOT EXISTS inscricao (
+                id_inscricao INTEGER PRIMARY KEY AUTOINCREMENT,
+                semestre INTEGER NOT NULL, 
+                data_inscricao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                estado INTEGER NOT NULL,
+                FOREIGN KEY (id_estudante) REFERENCES estudante(id_estudante),
+                FOREIGN KEY (id_cadeira) REFERENCES cadeira(id_cadeira)
+               
+            )
+            """
+
+        return self.executarComandoSql(comandoSql)
+
+    def criarTabelaDocente(self):
+        """Cria a tabela Docente""" """Cria uma tabela na BD caso ela nao exista."""
+        comandoSql="""
+       CREATE TABLE IF NOT EXISTS docente (
+                id_docente INTEGER PRIMARY KEY AUTOINCREMENT,
+                numero_docente INTEGER NOT NULL, 
+                nome TEXT NOT NULL,
+                email  TEXT UNIQUE NOT NULL      
+            )
+            """
+
+        return self.executarComandoSql(comandoSql)
+
+
+
+    def criarTabelaTurma(self):
+        """Cria a tabela turma""" """Cria uma tabela na BD caso ela nao exista."""
+        comandoSql="""
+       CREATE TABLE IF NOT EXISTS turma (
+                id_turma INTEGER PRIMARY KEY AUTOINCREMENT,
+                horario TEXT NOT NULL, 
+                ano_letivo INTEGER NOT NULL,
+                FOREIGN KEY (id_cadeira) REFERENCES cadeira(id_cadeira),
+                FOREIGN KEY (id_docente) REFERENCES docente(id_docente)
+               
+            )
+            """
+            
+        return self.executarComandoSql(comandoSql)
+
     def criarTabelaNotas(self):
-            """Cria a tabela notas""" """Cria uma tabela na BD caso ela nao exista."""
-            comandoSql="""
-                 CREATE TABLE IF NOT EXISTS notas (
-                       id INTEGER PRIMARY KEY AUTOINCREMENT,
-                       aluno_id INTEGER NOT NULL,
-                       disciplina_id INTEGER NOT NULL,
-                       nota1 REAL,
-                       nota2 REAL,
-                       nota3 REAL,
-                       nota_final REAL,
-                       frequencia REAL DEFAULT 0,
-                       semestre TEXT NOT NULL,
-                       ano INTEGER NOT NULL,
-                       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                       FOREIGN KEY (aluno_id) REFERENCES usuarios(id),
-                       FOREIGN KEY (disciplina_id) REFERENCES disciplinas(id),
-                       UNIQUE(aluno_id, disciplina_id, semestre, ano)
-                   )
-                """
-    
-            return self.executarComandoSql(comandoSql)
-        
+        """Cria a tabela Notas""" """Cria uma tabela na BD caso ela nao exista."""
+        comandoSql="""
+       CREATE TABLE IF NOT EXISTS notas (
+                id_nota INTEGER PRIMARY KEY AUTOINCREMENT,
+                nota1 REAL, 
+                nota2 REAL, 
+                nota3 REAL, 
+                frequencia REAL DEFAULT 0,
+                FOREIGN KEY (id_docente) REFERENCES docente(id_docente),
+                FOREIGN KEY (id_cadeira) REFERENCES cadeira(id_cadeira)
+               
+            )
+            """
+            
+        return self.executarComandoSql(comandoSql)
+
+
+     
         
     def criarTabelaNotificacoes(self):
             """Cria a tabela notificacoes""" """Cria uma tabela na BD caso ela nao exista."""
             comandoSql="""
             CREATE TABLE IF NOT EXISTS notificacoes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id_notificacao INTEGER PRIMARY KEY AUTOINCREMENT,
             aluno_id INTEGER NOT NULL,
             mensagem TEXT NOT NULL,
             lida INTEGER DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (aluno_id) REFERENCES usuarios(id)
+            FOREIGN KEY (id_estudante) REFERENCES estudante(id_estudante)
         )
             """
     
@@ -268,11 +320,15 @@ class GestorBaseDados:
     def inicializarTabelas(self):
         """Inicializa a base de dados criando as tabelas e preencheendo os dados de exemplo caso ela esteja vazia."""
         
-        self.criarTabelaUsuarios()
-        self.criarTabelaDisciplinas()
+        self.criarTabelaCurso()
+        self.criarTabelaEstudante()
+        self.criarTabelaCadeira()
+        self.criarTabelaInscricao()
+        self.criarTabelaDocente()
+        self.criarTabelaTurma()
         self.criarTabelaNotas()
         self.criarTabelaNotificacoes()
-        self.inserirDadosDeExemplo()
+        #self.inserirDadosDeExemplo()
         
         
         

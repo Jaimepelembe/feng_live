@@ -348,3 +348,5 @@ class GestorBaseDados:
         return self.executarComandoSql(comandoSql,parametros)
 
 
+gestor=GestorBaseDados("feng_live.db")
+gestor.inicializarTabelas()
